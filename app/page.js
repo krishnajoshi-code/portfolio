@@ -92,7 +92,7 @@ function SpotlightCursor() {
           borderRadius: "50%",
           background: `radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%)`,
           pointerEvents: "none",
-          zIndex: 1,
+          zIndex: 99997,
           transform: "translate(-50%, -50%)",
         }}
       />
@@ -109,7 +109,7 @@ function SpotlightCursor() {
           border: `1.5px solid ${hovering ? C.accent : "rgba(14,165,233,0.3)"}`,
           background: "transparent",
           pointerEvents: "none",
-          zIndex: 9998,
+          zIndex: 99998,
           transform: "translate(-50%, -50%)",
           transition: "width 0.25s ease, height 0.25s ease, border-color 0.25s ease",
         }}
@@ -126,7 +126,7 @@ function SpotlightCursor() {
           borderRadius: "50%",
           background: C.accent,
           pointerEvents: "none",
-          zIndex: 9999,
+          zIndex: 99999,
           transform: "translate(-50%, -50%)",
           transition: "width 0.15s, height 0.15s",
         }}
