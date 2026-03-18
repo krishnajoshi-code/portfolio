@@ -1088,7 +1088,7 @@ function About() {
 // ═══════════════════════════════════════════════════════════
 const ALL_SKILLS = ["React", "JavaScript", "TypeScript", "HTML5", "CSS3", "Tailwind", "Git", "Webpack", "Vite", "Next.js", "Jest", "Cypress", "SASS", "Redux", "REST APIs"];
 
-const SKILL_ICONS = { React: "⚛️", JavaScript: "✨", TypeScript: "🔷", HTML5: "🧱", CSS3: "🎨", Tailwind: "💨", Git: "🌿", Webpack: "📦", Vite: "⚡", "Next.js": "▲", Jest: "🧪", Cypress: "🌲", SASS: "💅", Redux: "🔄", "REST APIs": "🌐" };
+const SKILL_ICONS = {}; // removed — monochrome theme
 
 // ── Interactive Skill Demos ──
 
@@ -1321,7 +1321,7 @@ function ViteDemo() {
           <span style={{ color: C.muted, fontSize: "0.75rem", width: 35, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{Math.round(webpack * 40)}ms</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ color: C.muted, fontSize: "0.75rem", width: 70, fontFamily: "'JetBrains Mono', monospace" }}>Vite ⚡</span>
+          <span style={{ color: C.muted, fontSize: "0.75rem", width: 70, fontFamily: "'JetBrains Mono', monospace" }}>Vite</span>
           <div style={{ flex: 1, height: 24, background: C.surface, borderRadius: 12, overflow: "hidden" }}>
             <motion.div animate={{ width: vite + "%" }} style={{ height: "100%", background: "#a855f7", borderRadius: 12 }} />
           </div>
@@ -1330,7 +1330,7 @@ function ViteDemo() {
       </div>
       <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={race} disabled={running}
         style={{ padding: "8px 20px", background: running ? C.surface : C.accentDim, border: `1px solid ${running ? C.border : C.accent}`, borderRadius: 8, color: running ? C.muted : C.white, cursor: running ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
-        {running ? "Racing..." : "Start Race! 🏁"}
+        {running ? "Racing..." : "Start Race"}
       </motion.button>
     </div>
   );
@@ -1340,7 +1340,7 @@ function ViteDemo() {
 function ReduxDemo() {
   const [step, setStep] = useState(-1);
   const [count, setCount] = useState(0);
-  const steps = ["🖱️ Click", "📤 Dispatch", "⚙️ Reducer", "🏪 Store", "🖥️ UI Update"];
+  const steps = ["Click", "Dispatch", "Reducer", "Store", "UI Update"];
   function trigger() {
     setStep(0);
     [1, 2, 3, 4].forEach((s, i) => setTimeout(() => { setStep(s); if (s === 4) setCount(c => c + 1); }, (i + 1) * 500));
@@ -1367,7 +1367,7 @@ function ReduxDemo() {
         </motion.div>
         <motion.button whileHover={{ borderColor: C.accent, background: C.accentDim }} whileTap={{ scale: 0.95 }} onClick={trigger} disabled={step >= 0}
           style={{ padding: "10px 24px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, cursor: step >= 0 ? "default" : "pointer", fontSize: "0.85rem", fontWeight: 700 }}>
-          {step >= 0 ? "Flowing..." : "dispatch(increment()) 🚀"}
+          {step >= 0 ? "Flowing..." : "dispatch(increment())"}
         </motion.button>
       </div>
     </div>
@@ -1461,7 +1461,7 @@ function JestDemo() {
       </div>
       <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={run} disabled={running}
         style={{ marginTop: 10, padding: "8px 20px", background: running ? C.surface : C.accentDim, border: `1px solid ${running ? C.border : C.accent}`, borderRadius: 8, color: running ? C.muted : C.white, cursor: running ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
-        {running ? "Running..." : "npm test 🧪"}
+        {running ? "Running..." : "npm test"}
       </motion.button>
     </div>
   );
@@ -1505,7 +1505,7 @@ function SimpleDemo({ skill }) {
         </div>
         {tags.length === 6 && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ color: "#22c55e", marginTop: 8, fontSize: "0.8rem", fontFamily: "'JetBrains Mono', monospace" }}>
-            ✅ Perfect semantic structure! Screen readers love this!
+            Perfect semantic structure — screen readers love this.
           </motion.p>
         )}
         {tags.length > 0 && (
@@ -1558,11 +1558,11 @@ function SimpleDemo({ skill }) {
   if (skill === "Cypress") {
     const [step, setStep] = useState(-1);
     const actions = [
-      { action: "visit('/login')", visual: "🌐 Opening login page..." },
-      { action: "type('user@test.com')", visual: "⌨️ Typing email..." },
-      { action: "type('password')", visual: "🔑 Typing password..." },
-      { action: "click('Submit')", visual: "🖱️ Clicking submit..." },
-      { action: "url().should('/dashboard')", visual: "✅ Redirected to dashboard!" },
+      { action: "visit('/login')", visual: "Opening login page..." },
+      { action: "type('user@test.com')", visual: "Typing email..." },
+      { action: "type('password')", visual: "Typing password..." },
+      { action: "click('Submit')", visual: "Clicking submit..." },
+      { action: "url().should('/dashboard')", visual: "Redirected to dashboard" },
     ];
     function replay() {
       setStep(0);
@@ -1588,7 +1588,7 @@ function SimpleDemo({ skill }) {
         </div>
         <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={replay}
           style={{ marginTop: 10, padding: "8px 20px", background: C.accentDim, border: `1px solid ${C.accent}`, borderRadius: 8, color: C.white, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
-          Run Test 🌲
+          Run Test
         </motion.button>
       </div>
     );
@@ -1631,7 +1631,6 @@ function SimpleDemo({ skill }) {
 
   return (
     <div style={{ textAlign: "center", padding: 20 }}>
-      <div style={{ fontSize: "3rem", marginBottom: 12 }}>{SKILL_ICONS[skill]}</div>
       <p style={{ color: C.text, fontSize: "0.85rem" }}>{d.desc}</p>
     </div>
   );
@@ -1649,7 +1648,6 @@ function SkillChallengeModal({ skill, onClose }) {
         style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 28, maxWidth: 560, width: "100%", maxHeight: "85vh", overflowY: "auto", position: "relative" }}>
         <button onClick={onClose} style={{ position: "absolute", top: 14, right: 16, background: "none", border: "none", color: C.muted, fontSize: "1.5rem", cursor: "pointer", lineHeight: 1 }}>&times;</button>
         <div style={{ marginBottom: 20 }}>
-          <span style={{ fontSize: "1.5rem", marginRight: 8 }}>{SKILL_ICONS[skill]}</span>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", color: C.accent, fontSize: "0.7rem", letterSpacing: "2px", textTransform: "uppercase" }}>// interactive playground</span>
           <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: C.white, marginTop: 6 }}>{skill}</h3>
         </div>
@@ -1677,20 +1675,11 @@ function Skills() {
           <p style={{ color: C.text, fontSize: "0.9rem", marginBottom: 60, fontFamily: "'JetBrains Mono', monospace" }}>Click any skill to try an interactive challenge</p>
         </motion.div>
 
-        {/* Playful Marquee — two rows, opposite directions, with icons */}
-        <div style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "16px 0" }}>
-          <div style={{ display: "flex", gap: 32, animation: "marquee 20s linear infinite", width: "fit-content", marginBottom: 12 }}>
+        {/* Marquee */}
+        <div style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "24px 0" }}>
+          <div style={{ display: "flex", gap: 48, animation: "marquee 25s linear infinite", width: "fit-content" }}>
             {[...ALL_SKILLS, ...ALL_SKILLS].map((s, i) => (
-              <span key={"a" + i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px", display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: "1.1rem" }}>{SKILL_ICONS[s]}</span>{s}
-              </span>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 32, animation: "marquee-reverse 22s linear infinite", width: "fit-content" }}>
-            {[...ALL_SKILLS.slice().reverse(), ...ALL_SKILLS.slice().reverse()].map((s, i) => (
-              <span key={"b" + i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px", display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: "1.1rem" }}>{SKILL_ICONS[s]}</span>{s}
-              </span>
+              <span key={i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 500, color: C.muted, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px" }}>{s}</span>
             ))}
           </div>
         </div>
