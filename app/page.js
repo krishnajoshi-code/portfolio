@@ -1088,343 +1088,578 @@ function About() {
 // ═══════════════════════════════════════════════════════════
 const ALL_SKILLS = ["React", "JavaScript", "TypeScript", "HTML5", "CSS3", "Tailwind", "Git", "Webpack", "Vite", "Next.js", "Jest", "Cypress", "SASS", "Redux", "REST APIs"];
 
-const SKILL_CHALLENGES = {
-  React: {
-    title: "React Component Challenge",
-    description: "What will this component render?",
-    code: `function Counter() {\n  const [count, setCount] = useState(0);\n  return (\n    <button onClick={() => setCount(c => c + 1)}>\n      Clicked {count} times\n    </button>\n  );\n}`,
-    question: "What happens when the button is clicked 3 times?",
-    options: ["Clicked 0 times", "Clicked 3 times", "Error: useState not defined", "Nothing happens"],
-    correct: 1,
-    explanation: "Each click calls setCount which increments the state. After 3 clicks, count = 3, so it renders 'Clicked 3 times'."
-  },
-  JavaScript: {
-    title: "JS Output Challenge",
-    description: "Predict the console output:",
-    code: `console.log(typeof null);\nconsole.log(0.1 + 0.2 === 0.3);\nconsole.log("5" + 3);\nconsole.log("5" - 3);`,
-    question: "What are the 4 outputs in order?",
-    options: ["object, false, 53, 2", "null, true, 8, 2", "object, true, 53, 2", "undefined, false, 8, 2"],
-    correct: 0,
-    explanation: "typeof null is 'object' (JS quirk), 0.1+0.2 is 0.30000...04 (not 0.3), '5'+3 concatenates to '53', '5'-3 coerces to number giving 2."
-  },
-  TypeScript: {
-    title: "TypeScript Type Challenge",
-    description: "Which type definition is correct?",
-    code: `interface User {\n  name: string;\n  age: number;\n  email?: string;\n}\n\nconst user: User = ???`,
-    question: "Which object satisfies the User interface?",
-    options: [
-      '{ name: "Krishna", age: "25" }',
-      '{ name: "Krishna", age: 25 }',
-      '{ name: "Krishna" }',
-      '{ name: "Krishna", age: 25, phone: 123 }'
-    ],
-    correct: 1,
-    explanation: "name (string) and age (number) are required. email is optional (?). Option B has correct types. Option D fails because 'phone' is not in the interface."
-  },
-  HTML5: {
-    title: "Semantic HTML Challenge",
-    description: "Which is the most semantic HTML5 structure?",
-    code: `<!-- Option A -->\n<div class="header">\n  <div class="nav">...</div>\n</div>\n\n<!-- Option B -->\n<header>\n  <nav>...</nav>\n</header>`,
-    question: "Which structure is better for accessibility?",
-    options: ["Option A (div-based)", "Option B (semantic tags)", "Both are identical", "Neither is correct"],
-    correct: 1,
-    explanation: "Semantic HTML5 tags like <header>, <nav>, <main>, <article> provide meaning to screen readers and search engines. Divs have no semantic value."
-  },
-  CSS3: {
-    title: "CSS Flexbox Challenge",
-    description: "What does this CSS do?",
-    code: `.container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n}`,
-    question: "Where will the child element appear?",
-    options: ["Top-left corner", "Center of the page", "Bottom-right corner", "Stretched to full width"],
-    correct: 1,
-    explanation: "justify-content: center (horizontal center) + align-items: center (vertical center) + height: 100vh (full viewport) = perfectly centered on the page."
-  },
-  Tailwind: {
-    title: "Tailwind CSS Challenge",
-    description: "Convert this CSS to Tailwind classes:",
-    code: `/* CSS */\n.button {\n  background-color: #3b82f6;\n  color: white;\n  padding: 8px 16px;\n  border-radius: 8px;\n  font-weight: 700;\n}`,
-    question: "Which Tailwind classes are correct?",
-    options: [
-      "bg-blue-500 text-white p-2 rounded font-bold",
-      "bg-blue-500 text-white py-2 px-4 rounded-lg font-bold",
-      "blue-bg white-text pad-2 round-lg bold",
-      "bg-primary text-light p-2-4 rad-8 fw-700"
-    ],
-    correct: 1,
-    explanation: "bg-blue-500 = #3b82f6, text-white, py-2 px-4 = 8px 16px, rounded-lg = 8px border-radius, font-bold = 700 weight."
-  },
-  Git: {
-    title: "Git Workflow Challenge",
-    description: "You accidentally committed to main. What do you do?",
-    code: `$ git log --oneline\nabc1234 bad commit (HEAD -> main)\ndef5678 previous good commit`,
-    question: "What's the safest way to undo without losing changes?",
-    options: [
-      "git reset --hard HEAD~1",
-      "git reset --soft HEAD~1",
-      "git revert HEAD",
-      "git push --force"
-    ],
-    correct: 1,
-    explanation: "git reset --soft HEAD~1 moves HEAD back but keeps your changes staged. You can then switch to a new branch and commit there safely."
-  },
-  Webpack: {
-    title: "Webpack Config Challenge",
-    description: "What does this webpack config do?",
-    code: `module.exports = {\n  entry: './src/index.js',\n  output: {\n    filename: 'bundle.js',\n    path: path.resolve(__dirname, 'dist')\n  },\n  mode: 'production'\n};`,
-    question: "What happens when you run webpack?",
-    options: [
-      "Starts a dev server",
-      "Bundles & minifies src/index.js into dist/bundle.js",
-      "Only copies files",
-      "Runs tests"
-    ],
-    correct: 1,
-    explanation: "entry: starting file, output: bundled result in dist/bundle.js, mode: 'production' enables minification and tree-shaking."
-  },
-  Vite: {
-    title: "Vite Speed Challenge",
-    description: "Why is Vite faster than Webpack for development?",
-    code: `// Webpack: Bundles EVERYTHING first\n// Then serves the bundle to browser\n\n// Vite: Uses native ES modules\n// Serves files directly, transforms on-demand`,
-    question: "What's Vite's key advantage?",
-    options: [
-      "It uses a smaller config file",
-      "Native ES modules + on-demand transforms (no bundling in dev)",
-      "It only works with React",
-      "It pre-compiles everything at install time"
-    ],
-    correct: 1,
-    explanation: "Vite leverages native ES modules in the browser. It doesn't bundle during dev — it transforms files on-demand, making HMR (Hot Module Replacement) near-instant."
-  },
-  "Next.js": {
-    title: "Next.js Rendering Challenge",
-    description: "What type of rendering is this?",
-    code: `// app/page.js\nexport default async function Page() {\n  const res = await fetch('https://api.example.com/data');\n  const data = await res.json();\n  return <div>{data.title}</div>;\n}`,
-    question: "When does the data fetching happen?",
-    options: [
-      "In the browser (client-side)",
-      "On the server at request time (SSR)",
-      "At build time only (SSG)",
-      "Never — it will error"
-    ],
-    correct: 1,
-    explanation: "In Next.js App Router, async Server Components fetch data on the server at request time by default. The HTML is sent pre-rendered to the browser."
-  },
-  Jest: {
-    title: "Testing Challenge",
-    description: "Fix this failing test:",
-    code: `function add(a, b) { return a + b; }\n\ntest('adds 1 + 2 to equal 3', () => {\n  expect(add(1, 2)).toBe(4); // ❌ FAILS\n});`,
-    question: "What should .toBe() value be?",
-    options: ["toBe(4)", "toBe(3)", "toBe('3')", "toEqual(12)"],
-    correct: 1,
-    explanation: "add(1, 2) returns 3, so the assertion should be .toBe(3). The test was expecting 4 which is incorrect."
-  },
-  Cypress: {
-    title: "E2E Testing Challenge",
-    description: "What does this Cypress test do?",
-    code: `cy.visit('/login');\ncy.get('[data-testid=\"email\"]').type('user@test.com');\ncy.get('[data-testid=\"password\"]').type('pass123');\ncy.get('button[type=\"submit\"]').click();\ncy.url().should('include', '/dashboard');`,
-    question: "What is this test verifying?",
-    options: [
-      "That the login page loads",
-      "That form validation works",
-      "That login redirects to dashboard on success",
-      "That the password is encrypted"
-    ],
-    correct: 2,
-    explanation: "The test fills login credentials, clicks submit, then asserts the URL changed to /dashboard — verifying successful login redirect."
-  },
-  SASS: {
-    title: "SASS Nesting Challenge",
-    description: "What CSS does this SASS compile to?",
-    code: `.nav {\n  background: #333;\n  &__item {\n    color: white;\n    &--active {\n      color: #0ea5e9;\n    }\n  }\n}`,
-    question: "What's the CSS selector for the active item?",
-    options: [
-      ".nav .item .active",
-      ".nav__item--active",
-      ".nav--active__item",
-      ".nav > .item.active"
-    ],
-    correct: 1,
-    explanation: "SASS & references the parent. &__item becomes .nav__item. &--active inside becomes .nav__item--active. This is the BEM naming convention."
-  },
-  Redux: {
-    title: "Redux Flow Challenge",
-    description: "What's the correct Redux data flow?",
-    code: `// User clicks "Add to Cart"\n// What happens next?\n\n1. dispatch(addItem(product))\n2. reducer updates state\n3. component re-renders\n4. UI shows new cart count`,
-    question: "What's the correct order of Redux data flow?",
-    options: [
-      "Component → Store → Reducer → Action",
-      "Action → Dispatch → Reducer → Store → UI",
-      "Store → Action → Component → Reducer",
-      "UI → Reducer → Action → Store"
-    ],
-    correct: 1,
-    explanation: "Redux flow: User triggers Action → dispatch() sends it → Reducer processes and returns new state → Store updates → UI re-renders with new data."
-  },
-  "REST APIs": {
-    title: "REST API Challenge",
-    description: "Match the HTTP method to its purpose:",
-    code: `GET    /api/users      → ???\nPOST   /api/users      → ???\nPUT    /api/users/1    → ???\nDELETE /api/users/1    → ???`,
-    question: "What does PUT /api/users/1 do?",
-    options: [
-      "Creates a new user",
-      "Gets user with id 1",
-      "Updates/replaces user with id 1",
-      "Deletes user with id 1"
-    ],
-    correct: 2,
-    explanation: "GET = read, POST = create, PUT = update/replace entire resource, DELETE = remove. PUT /api/users/1 updates the user with id 1."
-  },
-};
+const SKILL_ICONS = { React: "⚛️", JavaScript: "✨", TypeScript: "🔷", HTML5: "🧱", CSS3: "🎨", Tailwind: "💨", Git: "🌿", Webpack: "📦", Vite: "⚡", "Next.js": "▲", Jest: "🧪", Cypress: "🌲", SASS: "💅", Redux: "🔄", "REST APIs": "🌐" };
 
-function SkillChallengeModal({ skill, onClose }) {
-  const challenge = SKILL_CHALLENGES[skill];
-  const [selected, setSelected] = useState(null);
-  const [showResult, setShowResult] = useState(false);
+// ── Interactive Skill Demos ──
 
-  if (!challenge) return null;
-
-  function handleSelect(idx) {
-    if (showResult) return;
-    setSelected(idx);
-    setShowResult(true);
-  }
-
-  const isCorrect = selected === challenge.correct;
-
+// React Demo: Live mini app with counter + color changer
+function ReactDemo() {
+  const [count, setCount] = useState(0);
+  const [color, setColor] = useState(C.accent);
+  const colors = ["#0ea5e9", "#22c55e", "#f59e0b", "#ef4444", "#a855f7", "#ec4899"];
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(10px)",
-        display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: 20,
-      }}
-    >
-      <motion.div
-        initial={{ scale: 0.9, y: 30 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 30 }}
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: C.card, border: `1px solid ${C.border}`, borderRadius: 16,
-          padding: 32, maxWidth: 600, width: "100%", maxHeight: "85vh", overflowY: "auto",
-          position: "relative",
-        }}
-      >
-        {/* Close button */}
-        <button onClick={onClose} style={{
-          position: "absolute", top: 16, right: 16, background: "none", border: "none",
-          color: C.muted, fontSize: "1.5rem", cursor: "pointer", lineHeight: 1,
-        }}>&times;</button>
-
-        {/* Header */}
-        <div style={{ marginBottom: 24 }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", color: C.accent, fontSize: "0.7rem", letterSpacing: "2px", textTransform: "uppercase" }}>// {skill} challenge</span>
-          <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: C.white, marginTop: 8 }}>{challenge.title}</h3>
-          <p style={{ color: C.text, fontSize: "0.9rem", marginTop: 4 }}>{challenge.description}</p>
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 16 }}>A live React component — try clicking!</p>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+        <motion.div whileTap={{ scale: 0.9 }} onClick={() => setCount(c => c + 1)}
+          style={{ width: 120, height: 120, borderRadius: 16, background: color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", userSelect: "none" }}>
+          <span style={{ fontSize: "2.5rem", fontWeight: 900, color: "#fff" }}>{count}</span>
+          <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.7)", marginTop: 2 }}>tap me</span>
+        </motion.div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", maxWidth: 120 }}>
+          {colors.map(c => (
+            <motion.div key={c} whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.8 }} onClick={() => setColor(c)}
+              style={{ width: 28, height: 28, borderRadius: "50%", background: c, cursor: "pointer", border: color === c ? "2px solid #fff" : "2px solid transparent" }} />
+          ))}
         </div>
+      </div>
+      <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 0.3 }} key={count}
+        style={{ marginTop: 16, padding: "8px 16px", background: C.surface, borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", color: C.text }}>
+        {"<Counter value={"}{count}{"} color={\"" + color + "\"} />"}
+      </motion.div>
+    </div>
+  );
+}
 
-        {/* Code block */}
-        <div style={{
-          background: "#0d1117", borderRadius: 10, padding: 16, marginBottom: 20,
-          fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", color: "#e6edf3",
-          whiteSpace: "pre-wrap", lineHeight: 1.6, overflowX: "auto",
-          border: `1px solid ${C.border}`,
-        }}>
-          {challenge.code}
+// JavaScript Demo: Live console
+function JavaScriptDemo() {
+  const [input, setInput] = useState("");
+  const [logs, setLogs] = useState([{ type: "info", text: '> Try: 2**10, "hello".split(""), Date.now()' }]);
+  function runCode() {
+    if (!input.trim()) return;
+    try {
+      const result = String(new Function("return " + input)());
+      setLogs(l => [...l, { type: "input", text: "> " + input }, { type: "output", text: result }]);
+    } catch (e) {
+      setLogs(l => [...l, { type: "input", text: "> " + input }, { type: "error", text: e.message }]);
+    }
+    setInput("");
+  }
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>A mini JS console — type any expression!</p>
+      <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", maxHeight: 180, overflowY: "auto" }}>
+        {logs.slice(-8).map((l, i) => (
+          <div key={i} style={{ color: l.type === "error" ? "#ef4444" : l.type === "output" ? "#22c55e" : l.type === "input" ? C.accent : C.muted, marginBottom: 4 }}>{l.text}</div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && runCode()}
+          placeholder="Type JavaScript here..."
+          style={{ flex: 1, padding: "8px 12px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, color: C.white, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", outline: "none" }} />
+        <motion.button whileHover={{ background: C.accent }} whileTap={{ scale: 0.95 }} onClick={runCode}
+          style={{ padding: "8px 16px", background: C.accentDim, border: "none", borderRadius: 6, color: C.white, cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>Run</motion.button>
+      </div>
+    </div>
+  );
+}
+
+// CSS Demo: Live flexbox playground
+function CSSDemo() {
+  const [justify, setJustify] = useState("center");
+  const [align, setAlign] = useState("center");
+  const [gap, setGap] = useState(12);
+  const [radius, setRadius] = useState(8);
+  const justifyOpts = ["flex-start", "center", "flex-end", "space-between", "space-around"];
+  const alignOpts = ["flex-start", "center", "flex-end", "stretch"];
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Play with flexbox properties live!</p>
+      <div style={{ display: "flex", justifyContent: justify, alignItems: align, gap, height: 140, background: C.surface, borderRadius: 10, padding: 12, marginBottom: 12, transition: "all 0.3s" }}>
+        {[C.accent, "#22c55e", "#f59e0b"].map((bg, i) => (
+          <motion.div layout key={i} style={{ width: 40, height: align === "stretch" ? "auto" : 40, borderRadius: radius, background: bg, minHeight: 30 }} />
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: "0.75rem" }}>
+        <div>
+          <label style={{ color: C.muted, display: "block", marginBottom: 4 }}>justify-content</label>
+          <select value={justify} onChange={e => setJustify(e.target.value)}
+            style={{ width: "100%", padding: "6px 8px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, color: C.white, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem" }}>
+            {justifyOpts.map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
         </div>
-
-        {/* Question */}
-        <p style={{ color: C.white, fontWeight: 700, marginBottom: 16, fontSize: "0.95rem" }}>{challenge.question}</p>
-
-        {/* Options */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {challenge.options.map((opt, idx) => {
-            let bg = "transparent";
-            let borderCol = C.border;
-            let textCol = C.text;
-
-            if (showResult) {
-              if (idx === challenge.correct) {
-                bg = "rgba(34, 197, 94, 0.15)";
-                borderCol = "#22c55e";
-                textCol = "#22c55e";
-              } else if (idx === selected && !isCorrect) {
-                bg = "rgba(239, 68, 68, 0.15)";
-                borderCol = "#ef4444";
-                textCol = "#ef4444";
-              }
-            } else if (idx === selected) {
-              borderCol = C.accent;
-              bg = C.accentDim;
-            }
-
-            return (
-              <motion.button
-                key={idx}
-                whileHover={!showResult ? { borderColor: C.accent, background: C.accentDim } : {}}
-                whileTap={!showResult ? { scale: 0.98 } : {}}
-                onClick={() => handleSelect(idx)}
-                data-hover
-                style={{
-                  padding: "12px 16px", border: `1px solid ${borderCol}`, borderRadius: 8,
-                  background: bg, color: textCol, textAlign: "left",
-                  cursor: showResult ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "0.82rem", transition: "all 0.2s", lineHeight: 1.4,
-                }}
-              >
-                <span style={{ color: C.muted, marginRight: 8 }}>{String.fromCharCode(65 + idx)}.</span>
-                {opt}
-              </motion.button>
-            );
-          })}
+        <div>
+          <label style={{ color: C.muted, display: "block", marginBottom: 4 }}>align-items</label>
+          <select value={align} onChange={e => setAlign(e.target.value)}
+            style={{ width: "100%", padding: "6px 8px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, color: C.white, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem" }}>
+            {alignOpts.map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
         </div>
+        <div>
+          <label style={{ color: C.muted, display: "block", marginBottom: 4 }}>gap: {gap}px</label>
+          <input type="range" min="0" max="40" value={gap} onChange={e => setGap(Number(e.target.value))} style={{ width: "100%", accentColor: C.accent }} />
+        </div>
+        <div>
+          <label style={{ color: C.muted, display: "block", marginBottom: 4 }}>border-radius: {radius}px</label>
+          <input type="range" min="0" max="50" value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: "100%", accentColor: C.accent }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        {/* Result */}
-        <AnimatePresence>
-          {showResult && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{
-                marginTop: 20, padding: 16, borderRadius: 10,
-                background: isCorrect ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)",
-                border: `1px solid ${isCorrect ? "#22c55e" : "#ef4444"}`,
-              }}
-            >
-              <p style={{ fontWeight: 800, color: isCorrect ? "#22c55e" : "#ef4444", marginBottom: 8, fontSize: "0.95rem" }}>
-                {isCorrect ? "Correct! ✅" : "Not quite! ❌"}
-              </p>
-              <p style={{ color: C.text, fontSize: "0.85rem", lineHeight: 1.6 }}>{challenge.explanation}</p>
+// TypeScript Demo: Animated type annotations
+function TypeScriptDemo() {
+  const [step, setStep] = useState(0);
+  const lines = [
+    { code: "let name", type: ": string", val: ' = "Krishna"' },
+    { code: "let age", type: ": number", val: " = 25" },
+    { code: "let skills", type: ": string[]", val: ' = ["React", "JS"]' },
+    { code: "let isDev", type: ": boolean", val: " = true" },
+  ];
+  useEffect(() => { const t = setInterval(() => setStep(s => (s + 1) % (lines.length + 1)), 1200); return () => clearInterval(t); }, []);
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Watch TypeScript add type safety to JavaScript!</p>
+      <div style={{ background: "#0d1117", borderRadius: 10, padding: 16, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.82rem" }}>
+        {lines.map((l, i) => (
+          <div key={i} style={{ marginBottom: 8, opacity: i < step ? 1 : 0.3, transition: "opacity 0.5s" }}>
+            <span style={{ color: "#ff7b72" }}>{l.code}</span>
+            <motion.span initial={{ opacity: 0, x: -10 }} animate={i < step ? { opacity: 1, x: 0 } : { opacity: 0 }}
+              style={{ color: "#79c0ff" }}>{l.type}</motion.span>
+            <span style={{ color: "#e6edf3" }}>{l.val}</span>
+          </div>
+        ))}
+      </div>
+      <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={() => setStep(0)}
+        style={{ marginTop: 10, padding: "6px 16px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 6, color: C.text, cursor: "pointer", fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace" }}>
+        Replay Animation
+      </motion.button>
+    </div>
+  );
+}
+
+// Git Demo: Mini terminal
+function GitDemo() {
+  const [input, setInput] = useState("");
+  const [log, setLog] = useState([{ text: "~/project (main) $", type: "prompt" }]);
+  const [branch, setBranch] = useState("main");
+  const cmds = {
+    "git status": () => "On branch " + branch + "\nnothing to commit, working tree clean",
+    "git branch": () => "* " + branch + "\n  feature/login\n  feature/cart",
+    "git log": () => "abc123 feat: add cart\ndef456 fix: navbar bug\nghi789 init: project setup",
+    "git checkout -b": (args) => { const b = args || "new-branch"; setBranch(b); return "Switched to new branch '" + b + "'"; },
+    "git checkout": (args) => { const b = args || "main"; setBranch(b); return "Switched to branch '" + b + "'"; },
+    help: () => "Try: git status, git branch, git log, git checkout main, git checkout -b feature/new",
+  };
+  function run() {
+    if (!input.trim()) return;
+    let output = "Command not found. Type 'help' for commands.";
+    const cmd = input.trim().toLowerCase();
+    if (cmd === "help" || cmd === "clear") {
+      if (cmd === "clear") { setLog([{ text: "~/" + branch + " $", type: "prompt" }]); setInput(""); return; }
+      output = cmds.help();
+    } else {
+      for (const [k, fn] of Object.entries(cmds)) {
+        if (cmd.startsWith(k)) { output = fn(cmd.replace(k, "").trim()); break; }
+      }
+    }
+    setLog(l => [...l, { text: "$ " + input, type: "input" }, { text: output, type: "output" }]);
+    setInput("");
+  }
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>A mini Git terminal — try commands!</p>
+      <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", maxHeight: 180, overflowY: "auto" }}>
+        {log.slice(-10).map((l, i) => (
+          <div key={i} style={{ color: l.type === "input" ? C.accent : l.type === "prompt" ? C.muted : "#e6edf3", whiteSpace: "pre-wrap", marginBottom: 2 }}>{l.text}</div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center" }}>
+        <span style={{ color: C.accent, fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace", whiteSpace: "nowrap" }}>({branch}) $</span>
+        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && run()}
+          placeholder="Type a git command..."
+          style={{ flex: 1, padding: "8px 12px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, color: C.white, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", outline: "none" }} />
+      </div>
+    </div>
+  );
+}
+
+// Tailwind Demo: Class playground
+function TailwindDemo() {
+  const [classes, setClasses] = useState("bg-blue-500 text-white p-4 rounded-lg");
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Type Tailwind classes and see them applied live!</p>
+      <div style={{ background: C.surface, borderRadius: 10, padding: 20, marginBottom: 12, display: "flex", justifyContent: "center", alignItems: "center", minHeight: 100 }}>
+        <div className={classes} style={{ transition: "all 0.3s" }}>Hello World</div>
+      </div>
+      <input value={classes} onChange={e => setClasses(e.target.value)} placeholder="Type Tailwind classes..."
+        style={{ width: "100%", padding: "10px 12px", background: "#0d1117", border: `1px solid ${C.border}`, borderRadius: 8, color: C.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", outline: "none" }} />
+      <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+        {["bg-red-500 text-white p-6 rounded-full text-2xl font-bold", "bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-xl shadow-lg", "border-2 border-green-500 text-green-500 p-3 rounded-md hover:bg-green-500"].map((preset, i) => (
+          <motion.button key={i} whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={() => setClasses(preset)}
+            style={{ padding: "4px 10px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 4, color: C.muted, cursor: "pointer", fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace" }}>
+            Preset {i + 1}
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Vite Demo: Speed comparison animation
+function ViteDemo() {
+  const [running, setRunning] = useState(false);
+  const [webpack, setWebpack] = useState(0);
+  const [vite, setVite] = useState(0);
+  function race() {
+    setRunning(true); setWebpack(0); setVite(0);
+    let w = 0, v = 0;
+    const wi = setInterval(() => { w += 2; setWebpack(w); if (w >= 100) clearInterval(wi); }, 80);
+    const vi = setInterval(() => { v += 8; setVite(Math.min(v, 100)); if (v >= 100) { clearInterval(vi); setTimeout(() => setRunning(false), 500); } }, 80);
+  }
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 16 }}>Watch Vite vs Webpack in a startup speed race!</p>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+          <span style={{ color: C.muted, fontSize: "0.75rem", width: 70, fontFamily: "'JetBrains Mono', monospace" }}>Webpack</span>
+          <div style={{ flex: 1, height: 24, background: C.surface, borderRadius: 12, overflow: "hidden" }}>
+            <motion.div animate={{ width: webpack + "%" }} style={{ height: "100%", background: "#f59e0b", borderRadius: 12 }} />
+          </div>
+          <span style={{ color: C.muted, fontSize: "0.75rem", width: 35, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{Math.round(webpack * 40)}ms</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ color: C.muted, fontSize: "0.75rem", width: 70, fontFamily: "'JetBrains Mono', monospace" }}>Vite ⚡</span>
+          <div style={{ flex: 1, height: 24, background: C.surface, borderRadius: 12, overflow: "hidden" }}>
+            <motion.div animate={{ width: vite + "%" }} style={{ height: "100%", background: "#a855f7", borderRadius: 12 }} />
+          </div>
+          <span style={{ color: C.muted, fontSize: "0.75rem", width: 35, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{Math.round(vite * 10)}ms</span>
+        </div>
+      </div>
+      <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={race} disabled={running}
+        style={{ padding: "8px 20px", background: running ? C.surface : C.accentDim, border: `1px solid ${running ? C.border : C.accent}`, borderRadius: 8, color: running ? C.muted : C.white, cursor: running ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
+        {running ? "Racing..." : "Start Race! 🏁"}
+      </motion.button>
+    </div>
+  );
+}
+
+// Redux Demo: Animated data flow
+function ReduxDemo() {
+  const [step, setStep] = useState(-1);
+  const [count, setCount] = useState(0);
+  const steps = ["🖱️ Click", "📤 Dispatch", "⚙️ Reducer", "🏪 Store", "🖥️ UI Update"];
+  function trigger() {
+    setStep(0);
+    [1, 2, 3, 4].forEach((s, i) => setTimeout(() => { setStep(s); if (s === 4) setCount(c => c + 1); }, (i + 1) * 500));
+    setTimeout(() => setStep(-1), 3000);
+  }
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 16 }}>Click to watch the Redux data flow in action!</p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 16, flexWrap: "wrap" }}>
+        {steps.map((s, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <motion.div animate={{ background: i <= step ? C.accent : C.surface, scale: i === step ? 1.15 : 1, color: i <= step ? "#fff" : C.muted }}
+              style={{ padding: "6px 10px", borderRadius: 8, fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace", textAlign: "center", transition: "all 0.3s", whiteSpace: "nowrap" }}>
+              {s}
             </motion.div>
-          )}
-        </AnimatePresence>
+            {i < steps.length - 1 && <span style={{ color: i < step ? C.accent : C.border }}>→</span>}
+          </div>
+        ))}
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <motion.div key={count} animate={{ scale: [1, 1.2, 1] }}
+          style={{ fontSize: "2rem", fontWeight: 900, color: C.white, marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>
+          Count: {count}
+        </motion.div>
+        <motion.button whileHover={{ borderColor: C.accent, background: C.accentDim }} whileTap={{ scale: 0.95 }} onClick={trigger} disabled={step >= 0}
+          style={{ padding: "10px 24px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, cursor: step >= 0 ? "default" : "pointer", fontSize: "0.85rem", fontWeight: 700 }}>
+          {step >= 0 ? "Flowing..." : "dispatch(increment()) 🚀"}
+        </motion.button>
+      </div>
+    </div>
+  );
+}
 
-        {/* Try another */}
-        {showResult && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            onClick={onClose}
-            whileHover={{ borderColor: C.accent }}
-            data-hover
-            style={{
-              marginTop: 16, padding: "10px 24px", border: `1px solid ${C.border}`,
-              borderRadius: 6, background: "transparent", color: C.white,
-              cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem",
-              width: "100%", transition: "border-color 0.3s",
-            }}
-          >
-            Close &amp; Try Another Skill
+// REST API Demo: Mini API tester
+function APIDemo() {
+  const [method, setMethod] = useState("GET");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const endpoints = { GET: "/api/users/1", POST: "/api/users", PUT: "/api/users/1", DELETE: "/api/users/1" };
+  const responses = {
+    GET: { id: 1, name: "Krishna Joshi", role: "Frontend Dev" },
+    POST: { id: 4, name: "New User", created: true },
+    PUT: { id: 1, name: "Krishna (Updated)", modified: true },
+    DELETE: { id: 1, deleted: true, status: "success" },
+  };
+  const colors = { GET: "#22c55e", POST: "#3b82f6", PUT: "#f59e0b", DELETE: "#ef4444" };
+  function send() {
+    setLoading(true); setResult(null);
+    setTimeout(() => { setResult(responses[method]); setLoading(false); }, 800);
+  }
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Test REST API methods — click Send!</p>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {["GET", "POST", "PUT", "DELETE"].map(m => (
+          <motion.button key={m} whileTap={{ scale: 0.95 }} onClick={() => { setMethod(m); setResult(null); }}
+            style={{ padding: "6px 12px", background: method === m ? colors[m] : "transparent", border: `1px solid ${method === m ? colors[m] : C.border}`, borderRadius: 6, color: method === m ? "#fff" : C.muted, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", fontWeight: 700 }}>
+            {m}
+          </motion.button>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <div style={{ flex: 1, padding: "8px 12px", background: C.surface, borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", color: C.text }}>
+          <span style={{ color: colors[method], fontWeight: 700 }}>{method}</span> {endpoints[method]}
+        </div>
+        <motion.button whileTap={{ scale: 0.95 }} onClick={send} disabled={loading}
+          style={{ padding: "8px 16px", background: colors[method], border: "none", borderRadius: 6, color: "#fff", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>
+          {loading ? "..." : "Send"}
+        </motion.button>
+      </div>
+      <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", minHeight: 60 }}>
+        {loading ? <span style={{ color: C.muted }}>Sending request...</span> :
+          result ? <pre style={{ color: "#22c55e", margin: 0 }}>{"// 200 OK\n" + JSON.stringify(result, null, 2)}</pre> :
+            <span style={{ color: C.muted }}>// Response will appear here</span>}
+      </div>
+    </div>
+  );
+}
+
+// Jest Demo: Animated test runner
+function JestDemo() {
+  const [running, setRunning] = useState(false);
+  const [results, setResults] = useState([]);
+  const tests = [
+    { name: "renders component correctly", pass: true },
+    { name: "handles click event", pass: true },
+    { name: "updates state on input", pass: true },
+    { name: "displays error message", pass: false },
+    { name: "matches snapshot", pass: true },
+  ];
+  function run() {
+    setRunning(true); setResults([]);
+    tests.forEach((t, i) => {
+      setTimeout(() => {
+        setResults(r => [...r, t]);
+        if (i === tests.length - 1) setTimeout(() => setRunning(false), 500);
+      }, (i + 1) * 600);
+    });
+  }
+  const passed = results.filter(r => r.pass).length;
+  const failed = results.filter(r => !r.pass).length;
+  return (
+    <div>
+      <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Watch a test suite run in real-time!</p>
+      <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", minHeight: 120 }}>
+        {results.length === 0 && !running && <span style={{ color: C.muted }}>PASS ./components/App.test.js</span>}
+        {results.map((r, i) => (
+          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+            style={{ marginBottom: 4, color: r.pass ? "#22c55e" : "#ef4444" }}>
+            {r.pass ? "✓" : "✗"} {r.name} <span style={{ color: C.muted }}>({(Math.random() * 50 + 5).toFixed(0)}ms)</span>
+          </motion.div>
+        ))}
+        {results.length === tests.length && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ marginTop: 8, borderTop: `1px solid ${C.border}`, paddingTop: 8 }}>
+            <span style={{ color: "#22c55e" }}>Tests: {passed} passed</span>, <span style={{ color: failed ? "#ef4444" : C.muted }}>{failed} failed</span>, {tests.length} total
+          </motion.div>
+        )}
+      </div>
+      <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={run} disabled={running}
+        style={{ marginTop: 10, padding: "8px 20px", background: running ? C.surface : C.accentDim, border: `1px solid ${running ? C.border : C.accent}`, borderRadius: 8, color: running ? C.muted : C.white, cursor: running ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
+        {running ? "Running..." : "npm test 🧪"}
+      </motion.button>
+    </div>
+  );
+}
+
+// Generic simple demo for remaining skills
+function SimpleDemo({ skill }) {
+  const demos = {
+    HTML5: { title: "Semantic HTML Builder", desc: "Drag to build a semantic page structure!", elements: ["<header>", "<nav>", "<main>", "<article>", "<aside>", "<footer>"], },
+    Webpack: { title: "Bundle Visualizer", desc: "Watch files get bundled together!" },
+    "Next.js": { title: "Rendering Modes", desc: "SSR vs CSR vs SSG comparison" },
+    Cypress: { title: "E2E Test Replay", desc: "Watch an automated browser test!" },
+    SASS: { title: "Nesting Visualizer", desc: "See how SASS compiles to CSS" },
+  };
+  const d = demos[skill] || { title: skill + " Demo", desc: "Interactive demo coming soon!" };
+
+  if (skill === "HTML5") {
+    const [tags, setTags] = useState([]);
+    const allTags = ["<header>", "<nav>", "<main>", "<article>", "<aside>", "<footer>"];
+    return (
+      <div>
+        <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Build a semantic HTML page by clicking tags in order!</p>
+        <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+          {allTags.map(t => (
+            <motion.button key={t} whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.9 }}
+              onClick={() => !tags.includes(t) && setTags([...tags, t])}
+              style={{ padding: "6px 12px", background: tags.includes(t) ? C.accentDim : "transparent", border: `1px solid ${tags.includes(t) ? C.accent : C.border}`, borderRadius: 6, color: tags.includes(t) ? C.accent : C.text, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem" }}>
+              {t}
+            </motion.button>
+          ))}
+        </div>
+        <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", minHeight: 100 }}>
+          <span style={{ color: C.muted }}>{"<!DOCTYPE html>"}</span><br />
+          <span style={{ color: "#ff7b72" }}>{"<body>"}</span><br />
+          {tags.map((t, i) => (
+            <motion.div key={t} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} style={{ marginLeft: 16, color: "#79c0ff" }}>
+              {t}...{t.replace("<", "</")}
+            </motion.div>
+          ))}
+          <span style={{ color: "#ff7b72" }}>{"</body>"}</span>
+        </div>
+        {tags.length === 6 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ color: "#22c55e", marginTop: 8, fontSize: "0.8rem", fontFamily: "'JetBrains Mono', monospace" }}>
+            ✅ Perfect semantic structure! Screen readers love this!
+          </motion.p>
+        )}
+        {tags.length > 0 && (
+          <motion.button whileTap={{ scale: 0.95 }} onClick={() => setTags([])}
+            style={{ marginTop: 8, padding: "4px 12px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 4, color: C.muted, cursor: "pointer", fontSize: "0.7rem" }}>
+            Reset
           </motion.button>
         )}
+      </div>
+    );
+  }
+
+  if (skill === "SASS") {
+    const [nesting, setNesting] = useState(1);
+    const sassCode = nesting === 1
+      ? ".nav {\n  color: white;\n}"
+      : nesting === 2
+        ? ".nav {\n  color: white;\n  &__item {\n    padding: 8px;\n  }\n}"
+        : ".nav {\n  color: white;\n  &__item {\n    padding: 8px;\n    &--active {\n      color: cyan;\n    }\n  }\n}";
+    const cssCode = nesting === 1
+      ? ".nav {\n  color: white;\n}"
+      : nesting === 2
+        ? ".nav { color: white; }\n.nav__item { padding: 8px; }"
+        : ".nav { color: white; }\n.nav__item { padding: 8px; }\n.nav__item--active { color: cyan; }";
+    return (
+      <div>
+        <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>See how SASS nesting compiles to flat CSS!</p>
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          {[1, 2, 3].map(n => (
+            <motion.button key={n} whileTap={{ scale: 0.95 }} onClick={() => setNesting(n)}
+              style={{ padding: "6px 14px", background: nesting === n ? C.accentDim : "transparent", border: `1px solid ${nesting === n ? C.accent : C.border}`, borderRadius: 6, color: nesting === n ? C.accent : C.muted, cursor: "pointer", fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace" }}>
+              Level {n}
+            </motion.button>
+          ))}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div>
+            <div style={{ color: "#ec4899", fontSize: "0.7rem", marginBottom: 4, fontFamily: "'JetBrains Mono', monospace" }}>SASS</div>
+            <div style={{ background: "#0d1117", borderRadius: 8, padding: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", color: "#e6edf3", whiteSpace: "pre-wrap", minHeight: 80 }}>{sassCode}</div>
+          </div>
+          <div>
+            <div style={{ color: "#22c55e", fontSize: "0.7rem", marginBottom: 4, fontFamily: "'JetBrains Mono', monospace" }}>Compiled CSS</div>
+            <div style={{ background: "#0d1117", borderRadius: 8, padding: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", color: "#e6edf3", whiteSpace: "pre-wrap", minHeight: 80 }}>{cssCode}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (skill === "Cypress") {
+    const [step, setStep] = useState(-1);
+    const actions = [
+      { action: "visit('/login')", visual: "🌐 Opening login page..." },
+      { action: "type('user@test.com')", visual: "⌨️ Typing email..." },
+      { action: "type('password')", visual: "🔑 Typing password..." },
+      { action: "click('Submit')", visual: "🖱️ Clicking submit..." },
+      { action: "url().should('/dashboard')", visual: "✅ Redirected to dashboard!" },
+    ];
+    function replay() {
+      setStep(0);
+      actions.forEach((_, i) => setTimeout(() => setStep(i), (i + 1) * 800));
+    }
+    return (
+      <div>
+        <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Watch a Cypress E2E test execute step by step!</p>
+        <div style={{ background: "#0d1117", borderRadius: 10, padding: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem", minHeight: 100 }}>
+          {actions.map((a, i) => (
+            <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: i <= step ? 1 : 0.2 }}
+              style={{ marginBottom: 6, display: "flex", gap: 8 }}>
+              <span style={{ color: i <= step ? "#22c55e" : C.muted }}>{i <= step ? "✓" : "○"}</span>
+              <span style={{ color: i === step ? C.accent : i < step ? C.text : C.muted }}>cy.{a.action}</span>
+            </motion.div>
+          ))}
+          {step >= 0 && (
+            <motion.div key={step} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              style={{ marginTop: 8, padding: "6px 10px", background: C.surface, borderRadius: 6, color: step === 4 ? "#22c55e" : C.accent, fontSize: "0.75rem" }}>
+              {actions[Math.min(step, actions.length - 1)].visual}
+            </motion.div>
+          )}
+        </div>
+        <motion.button whileHover={{ borderColor: C.accent }} whileTap={{ scale: 0.95 }} onClick={replay}
+          style={{ marginTop: 10, padding: "8px 20px", background: C.accentDim, border: `1px solid ${C.accent}`, borderRadius: 8, color: C.white, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem", fontWeight: 700 }}>
+          Run Test 🌲
+        </motion.button>
+      </div>
+    );
+  }
+
+  // Next.js & Webpack: use Vite-style comparison
+  if (skill === "Next.js") {
+    const [mode, setMode] = useState("SSR");
+    const modes = {
+      SSR: { time: "~200ms", desc: "Server renders HTML → sends complete page → JS hydrates", color: "#22c55e" },
+      CSR: { time: "~800ms", desc: "Empty HTML → download JS → render in browser → content appears", color: "#f59e0b" },
+      SSG: { time: "~50ms", desc: "Pre-built at build time → served from CDN → instant load", color: "#a855f7" },
+    };
+    return (
+      <div>
+        <p style={{ color: C.text, fontSize: "0.8rem", marginBottom: 12 }}>Compare Next.js rendering modes!</p>
+        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          {Object.keys(modes).map(m => (
+            <motion.button key={m} whileTap={{ scale: 0.95 }} onClick={() => setMode(m)}
+              style={{ flex: 1, padding: "10px", background: mode === m ? modes[m].color : "transparent", border: `1px solid ${mode === m ? modes[m].color : C.border}`, borderRadius: 8, color: mode === m ? "#fff" : C.muted, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.85rem", fontWeight: 700 }}>
+              {m}
+            </motion.button>
+          ))}
+        </div>
+        <motion.div key={mode} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          style={{ background: C.surface, borderRadius: 10, padding: 16, borderLeft: `3px solid ${modes[mode].color}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+            <span style={{ color: C.white, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{mode}</span>
+            <span style={{ color: modes[mode].color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{modes[mode].time}</span>
+          </div>
+          <p style={{ color: C.text, fontSize: "0.82rem", lineHeight: 1.6 }}>{modes[mode].desc}</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (skill === "Webpack") {
+    return <ViteDemo />;
+  }
+
+  return (
+    <div style={{ textAlign: "center", padding: 20 }}>
+      <div style={{ fontSize: "3rem", marginBottom: 12 }}>{SKILL_ICONS[skill]}</div>
+      <p style={{ color: C.text, fontSize: "0.85rem" }}>{d.desc}</p>
+    </div>
+  );
+}
+
+// Skill Demo Router
+const SKILL_DEMOS = { React: ReactDemo, JavaScript: JavaScriptDemo, TypeScript: TypeScriptDemo, CSS3: CSSDemo, Tailwind: TailwindDemo, Git: GitDemo, Vite: ViteDemo, Redux: ReduxDemo, "REST APIs": APIDemo, Jest: JestDemo };
+
+function SkillChallengeModal({ skill, onClose }) {
+  const Demo = SKILL_DEMOS[skill];
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: 20 }}>
+      <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }} onClick={e => e.stopPropagation()}
+        style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 28, maxWidth: 560, width: "100%", maxHeight: "85vh", overflowY: "auto", position: "relative" }}>
+        <button onClick={onClose} style={{ position: "absolute", top: 14, right: 16, background: "none", border: "none", color: C.muted, fontSize: "1.5rem", cursor: "pointer", lineHeight: 1 }}>&times;</button>
+        <div style={{ marginBottom: 20 }}>
+          <span style={{ fontSize: "1.5rem", marginRight: 8 }}>{SKILL_ICONS[skill]}</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", color: C.accent, fontSize: "0.7rem", letterSpacing: "2px", textTransform: "uppercase" }}>// interactive playground</span>
+          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: C.white, marginTop: 6 }}>{skill}</h3>
+        </div>
+        {Demo ? <Demo /> : <SimpleDemo skill={skill} />}
       </motion.div>
     </motion.div>
   );
 }
+
+// ── End of Skill Demos ──
 
 function Skills() {
   const ref = useRef(null);
@@ -1442,11 +1677,20 @@ function Skills() {
           <p style={{ color: C.text, fontSize: "0.9rem", marginBottom: 60, fontFamily: "'JetBrains Mono', monospace" }}>Click any skill to try an interactive challenge</p>
         </motion.div>
 
-        {/* Marquee */}
-        <div style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "24px 0" }}>
-          <div style={{ display: "flex", gap: 48, animation: "marquee 25s linear infinite", width: "fit-content" }}>
+        {/* Playful Marquee — two rows, opposite directions, with icons */}
+        <div style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "16px 0" }}>
+          <div style={{ display: "flex", gap: 32, animation: "marquee 20s linear infinite", width: "fit-content", marginBottom: 12 }}>
             {[...ALL_SKILLS, ...ALL_SKILLS].map((s, i) => (
-              <span key={i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 500, color: C.muted, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px" }}>{s}</span>
+              <span key={"a" + i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 600, color: C.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px", display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: "1.1rem" }}>{SKILL_ICONS[s]}</span>{s}
+              </span>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 32, animation: "marquee-reverse 22s linear infinite", width: "fit-content" }}>
+            {[...ALL_SKILLS.slice().reverse(), ...ALL_SKILLS.slice().reverse()].map((s, i) => (
+              <span key={"b" + i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 600, color: C.muted, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px", display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: "1.1rem" }}>{SKILL_ICONS[s]}</span>{s}
+              </span>
             ))}
           </div>
         </div>
