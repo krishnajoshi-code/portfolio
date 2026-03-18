@@ -1659,6 +1659,89 @@ function SkillChallengeModal({ skill, onClose }) {
 
 // ── End of Skill Demos ──
 
+// Matrix decode effect — characters scramble then resolve into skill names
+function MatrixCell({ text, delay }) {
+  const chars = "01!@#$%^&*<>{}[]|/\\~";
+  const [display, setDisplay] = useState(text.split("").map(() => chars[Math.floor(Math.random() * chars.length)]));
+  const [resolved, setResolved] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      let iteration = 0;
+      const interval = setInterval(() => {
+        setDisplay(text.split("").map((ch, i) => {
+          if (i < iteration) return ch;
+          return chars[Math.floor(Math.random() * chars.length)];
+        }));
+        iteration += 1;
+        if (iteration > text.length) {
+          clearInterval(interval);
+          setResolved(true);
+        }
+      }, 40);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [text, delay]);
+
+  // Re-scramble periodically
+  useEffect(() => {
+    if (!resolved) return;
+    const rescramble = setInterval(() => {
+      setResolved(false);
+      setDisplay(text.split("").map(() => chars[Math.floor(Math.random() * chars.length)]));
+      let iteration = 0;
+      const interval = setInterval(() => {
+        setDisplay(text.split("").map((ch, i) => i < iteration ? ch : chars[Math.floor(Math.random() * chars.length)]));
+        iteration += 1;
+        if (iteration > text.length) { clearInterval(interval); setResolved(true); }
+      }, 40);
+    }, 6000 + Math.random() * 4000);
+    return () => clearInterval(rescramble);
+  }, [resolved, text]);
+
+  return (
+    <span style={{
+      fontFamily: "'JetBrains Mono', monospace",
+      fontSize: "0.85rem",
+      fontWeight: 600,
+      letterSpacing: "1px",
+      color: resolved ? C.accent : C.muted,
+      transition: "color 0.3s",
+      whiteSpace: "nowrap",
+    }}>
+      {display.join("")}
+    </span>
+  );
+}
+
+function MatrixMarquee({ skills }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  return (
+    <div ref={ref} style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "20px 0" }}>
+      {/* Row 1 — scrolls left */}
+      <div style={{ display: "flex", gap: 40, animation: "marquee 30s linear infinite", width: "fit-content", marginBottom: 14 }}>
+        {[...skills, ...skills].map((s, i) => (
+          <div key={"r1-" + i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: C.border, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem" }}>{"///"}</span>
+            {isInView ? <MatrixCell text={s} delay={i * 120} /> : <span style={{ color: C.muted, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.85rem" }}>{s}</span>}
+          </div>
+        ))}
+      </div>
+      {/* Row 2 — scrolls right, dimmer */}
+      <div style={{ display: "flex", gap: 40, animation: "marquee-reverse 35s linear infinite", width: "fit-content", opacity: 0.4 }}>
+        {[...skills.slice().reverse(), ...skills.slice().reverse()].map((s, i) => (
+          <span key={"r2-" + i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", color: C.muted, letterSpacing: "2px", whiteSpace: "nowrap" }}>
+            {s.toUpperCase().split("").join(" ")}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -1675,14 +1758,8 @@ function Skills() {
           <p style={{ color: C.text, fontSize: "0.9rem", marginBottom: 60, fontFamily: "'JetBrains Mono', monospace" }}>Click any skill to try an interactive challenge</p>
         </motion.div>
 
-        {/* Marquee */}
-        <div style={{ overflow: "hidden", marginBottom: 60, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: "24px 0" }}>
-          <div style={{ display: "flex", gap: 48, animation: "marquee 25s linear infinite", width: "fit-content" }}>
-            {[...ALL_SKILLS, ...ALL_SKILLS].map((s, i) => (
-              <span key={i} style={{ whiteSpace: "nowrap", fontSize: "0.9rem", fontWeight: 500, color: C.muted, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1px" }}>{s}</span>
-            ))}
-          </div>
-        </div>
+        {/* Matrix decode marquee */}
+        <MatrixMarquee skills={ALL_SKILLS} />
 
         {/* Skill cards with stagger bounce */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
