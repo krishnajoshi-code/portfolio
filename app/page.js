@@ -366,12 +366,14 @@ function Terminal({ onClose }) {
   GitHub:   github.com/krishnajoshi`,
     projects: () => `
   01. Ashley Hotel Group   ashleyhotelgroup.com
-  02. Singapore Cruise     singaporecruise.com.sg
-  03. CentralHR Australia  centralhr.com.au
-  04. M2 Wellness          m2wellness.sg
-  05. Gallant              gallant.sg
-  06. React Learning       React 19 + Next.js + Hooks
-  07. SureSuccess          suresuccess.co.uk`,
+  02. SureSuccess          suresuccess.co.uk
+  03. Singapore Cruise     singaporecruise.com.sg
+  04. CentralHR Australia  centralhr.com.au
+  05. M2 Wellness          m2wellness.sg
+  06. Gallant              gallant.sg
+  07. React Learning       React 19 + Next.js + Hooks
+  08. Physics First        physicsfirst.sg
+  09. Jill Lowe            jilllowe.com`,
     hire: () => `
   ╔═════════════════════════════════════════════╗
   ║  🟢 AVAILABLE FOR HIRE                      ║
@@ -1866,12 +1868,14 @@ function Skills() {
 // ═══════════════════════════════════════════════════════════
 const PROJECTS = [
   { name: "Ashley Hotel Group", url: "https://ashleyhotelgroup.com", desc: "Multi-property hotel website with booking integration, responsive layouts, and brand consistency across the group.", tags: ["Responsive", "Custom Layouts", "SEO"], num: "01" },
-  { name: "Singapore Cruise", url: "https://singaporecruise.com.sg", desc: "Cruise booking platform with mobile-first responsive design and custom forms.", tags: ["Mobile-First", "Forms", "JavaScript"], num: "02" },
-  { name: "CentralHR Australia", url: "https://centralhr.com.au", desc: "HR services website with clean professional layout, service showcases, and contact integrations.", tags: ["Professional", "HR", "Responsive"], num: "03" },
-  { name: "M2 Wellness", url: "https://www.m2wellness.sg", desc: "Wellness platform with serene design aesthetics, service pages, and appointment-oriented UX.", tags: ["UX Design", "Wellness", "Animations"], num: "04" },
-  { name: "Gallant", url: "https://gallant.sg", desc: "Corporate website with bold design, modern animations, and seamless content management.", tags: ["Corporate", "Animations", "JavaScript"], num: "05" },
-  { name: "React Learning", url: "https://krishnajoshi-code.github.io/portfolio/", desc: "Interactive React learning journey — completed React Essential Training covering hooks, server components, Next.js App Router, and async data fetching with React 19.", tags: ["React 19", "Next.js", "Hooks"], num: "06" },
-  { name: "SureSuccess", url: "https://www.suresuccess.co.uk", desc: "Exam-prep platform for UK financial advisers (CISI IAD & CII DipPFS). Adaptive MCQ practice with full explanations, an AI tutor trained on the syllabi, spaced review, and timed exam-style mocks — built as a fast, responsive web app.", tags: ["React", "EdTech", "AI Tutor"], num: "07" },
+  { name: "SureSuccess", url: "https://www.suresuccess.co.uk", desc: "Exam-prep platform for UK financial advisers (CISI IAD & CII DipPFS). Adaptive MCQ practice with full explanations, an AI tutor trained on the syllabi, spaced review, and timed exam-style mocks — built as a fast, responsive web app.", tags: ["React", "EdTech", "AI Tutor"], num: "02" },
+  { name: "Singapore Cruise", url: "https://singaporecruise.com.sg", desc: "Cruise booking platform with mobile-first responsive design and custom forms.", tags: ["Mobile-First", "Forms", "JavaScript"], num: "03" },
+  { name: "CentralHR Australia", url: "https://centralhr.com.au", desc: "HR services website with clean professional layout, service showcases, and contact integrations.", tags: ["Professional", "HR", "Responsive"], num: "04" },
+  { name: "M2 Wellness", url: "https://www.m2wellness.sg", desc: "Wellness platform with serene design aesthetics, service pages, and appointment-oriented UX.", tags: ["UX Design", "Wellness", "Animations"], num: "05" },
+  { name: "Gallant", url: "https://gallant.sg", desc: "Corporate website with bold design, modern animations, and seamless content management.", tags: ["Corporate", "Animations", "JavaScript"], num: "06" },
+  { name: "React Learning", url: "https://krishnajoshi-code.github.io/portfolio/", desc: "Interactive React learning journey — completed React Essential Training covering hooks, server components, Next.js App Router, and async data fetching with React 19.", tags: ["React 19", "Next.js", "Hooks"], num: "07" },
+  { name: "Physics First", url: "https://www.physicsfirst.sg", desc: "Marketing site for a Singapore physics & science tuition centre (O/A Level, IGCSE, IB, IP). Responsive layout with programme listings, syllabus pages, testimonials, and clear enrolment calls-to-action.", tags: ["Responsive", "Education", "SEO"], num: "08" },
+  { name: "Jill Lowe", url: "https://www.jilllowe.com", desc: "Website for a Singapore talent-transformation and personal-image consultancy — course catalogue, corporate-training pages, and online shop, with an elegant, conversion-focused responsive design.", tags: ["Responsive", "Courses", "Branding"], num: "09" },
 ];
 
 function ProjectCard({ project, index, onSelect }) {
