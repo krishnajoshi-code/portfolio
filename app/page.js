@@ -15,8 +15,12 @@ const C = {
   text: "#999999",
   muted: "#555555",
   accent: "#0ea5e9",
+  accent2: "#8b5cf6",
   accentDim: "rgba(14, 165, 233, 0.15)",
   accentGlow: "rgba(14, 165, 233, 0.4)",
+  // Signature gradient — used across hero, headings, accents
+  grad: "linear-gradient(115deg, #0ea5e9 0%, #6366f1 45%, #8b5cf6 100%)",
+  gradText: "linear-gradient(115deg, #ffffff 0%, #bae6fd 40%, #c4b5fd 100%)",
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -366,7 +370,8 @@ function Terminal({ onClose }) {
   03. CentralHR Australia  centralhr.com.au
   04. M2 Wellness          m2wellness.sg
   05. Gallant              gallant.sg
-  06. React Learning       React 19 + Next.js + Hooks`,
+  06. React Learning       React 19 + Next.js + Hooks
+  07. SureSuccess          suresuccess.co.uk`,
     hire: () => `
   ╔═════════════════════════════════════════════╗
   ║  🟢 AVAILABLE FOR HIRE                      ║
@@ -591,7 +596,8 @@ function ProjectDrawer({ project, onClose }) {
           ))}
         </div>
 
-        <motion.a
+        {project.url ? (
+          <motion.a
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
@@ -612,6 +618,17 @@ function ProjectDrawer({ project, onClose }) {
           >
             Visit Live Site →
           </motion.a>
+        ) : (
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            border: `1px solid ${C.border}`, color: C.muted,
+            padding: "12px 28px", borderRadius: 6,
+            fontWeight: 700, fontSize: "0.85rem",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>
+            Live link coming soon
+          </span>
+        )}
 
         <p style={{
           marginTop: 24,
@@ -668,16 +685,34 @@ function ProjectDrawer({ project, onClose }) {
               color: C.muted,
               fontFamily: "'JetBrains Mono', monospace",
             }}>
-              {project.url}
+              {project.url || "preview coming soon"}
             </div>
           </div>
-          <iframe
-            src={project.url}
-            title={project.name}
-            style={{ width: "100%", height: "calc(100% - 38px)", border: "none" }}
-            loading="lazy"
-            sandbox="allow-scripts allow-same-origin"
-          />
+          {project.url ? (
+            <iframe
+              src={project.url}
+              title={project.name}
+              style={{ width: "100%", height: "calc(100% - 38px)", border: "none" }}
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin"
+            />
+          ) : (
+            <div style={{
+              width: "100%", height: "calc(100% - 38px)",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              gap: 14, textAlign: "center", padding: 24,
+              background: "radial-gradient(120% 120% at 50% 0%, rgba(14,165,233,0.08) 0%, #0c0c0c 60%)",
+            }}>
+              <span style={{
+                fontFamily: "'JetBrains Mono', monospace", fontSize: "3rem", fontWeight: 900,
+                background: C.grad, WebkitBackgroundClip: "text", backgroundClip: "text",
+                WebkitTextFillColor: "transparent", opacity: 0.5,
+              }}>{project.num}</span>
+              <p style={{ color: C.text, fontSize: "0.9rem", maxWidth: 320, lineHeight: 1.6 }}>
+                Live preview will appear here once the project URL is added.
+              </p>
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>
@@ -879,6 +914,30 @@ function Hero() {
         WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%)",
       }} />
 
+      {/* Aurora glow — slowly drifting colored light behind the name */}
+      <motion.div
+        aria-hidden
+        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.75, 0.5] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "absolute", top: "32%", left: "50%", width: 620, height: 620,
+          transform: "translate(-50%, -50%)", borderRadius: "50%", pointerEvents: "none",
+          background: "radial-gradient(circle, rgba(14,165,233,0.22) 0%, rgba(99,102,241,0.12) 40%, transparent 70%)",
+          filter: "blur(40px)", zIndex: 1,
+        }}
+      />
+      <motion.div
+        aria-hidden
+        animate={{ scale: [1.1, 1, 1.1], opacity: [0.35, 0.6, 0.35] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        style={{
+          position: "absolute", top: "40%", left: "62%", width: 460, height: 460,
+          transform: "translate(-50%, -50%)", borderRadius: "50%", pointerEvents: "none",
+          background: "radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%)",
+          filter: "blur(50px)", zIndex: 1,
+        }}
+      />
+
       <div style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: 800 }}>
         {/* Available badge — recruiter magnet */}
         <motion.div
@@ -923,7 +982,10 @@ function Hero() {
             margin: "0 0 16px 0", lineHeight: 1.05, letterSpacing: "-3px",
           }}
         >
-          Krishna<br />
+          <span style={{
+            background: C.gradText, WebkitBackgroundClip: "text",
+            backgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>Krishna</span><br />
           <span style={{ WebkitTextStroke: `1.5px ${C.white}`, WebkitTextFillColor: "transparent" }}>Joshi</span>
         </motion.h1>
 
@@ -959,14 +1021,15 @@ function Hero() {
         >
           <motion.a
               href="#projects"
-              whileHover={{ scale: 1.04 }}
+              whileHover={{ scale: 1.04, boxShadow: "0 12px 40px rgba(14,165,233,0.45)" }}
               whileTap={{ scale: 0.97 }}
               onClick={addRipple}
               style={{
-                background: C.white, color: C.bg,
+                background: C.grad, color: C.white,
                 padding: "14px 36px", borderRadius: 6,
                 textDecoration: "none", fontWeight: 700, fontSize: "0.9rem",
                 position: "relative", overflow: "hidden",
+                boxShadow: "0 8px 30px rgba(14,165,233,0.28)",
               }}
             >
               View Work
@@ -1808,6 +1871,7 @@ const PROJECTS = [
   { name: "M2 Wellness", url: "https://www.m2wellness.sg", desc: "Wellness platform with serene design aesthetics, service pages, and appointment-oriented UX.", tags: ["UX Design", "Wellness", "Animations"], num: "04" },
   { name: "Gallant", url: "https://gallant.sg", desc: "Corporate website with bold design, modern animations, and seamless content management.", tags: ["Corporate", "Animations", "JavaScript"], num: "05" },
   { name: "React Learning", url: "https://krishnajoshi-code.github.io/portfolio/", desc: "Interactive React learning journey — completed React Essential Training covering hooks, server components, Next.js App Router, and async data fetching with React 19.", tags: ["React 19", "Next.js", "Hooks"], num: "06" },
+  { name: "SureSuccess", url: "https://www.suresuccess.co.uk", desc: "Exam-prep platform for UK financial advisers (CISI IAD & CII DipPFS). Adaptive MCQ practice with full explanations, an AI tutor trained on the syllabi, spaced review, and timed exam-style mocks — built as a fast, responsive web app.", tags: ["React", "EdTech", "AI Tutor"], num: "07" },
 ];
 
 function ProjectCard({ project, index, onSelect }) {
@@ -1825,7 +1889,7 @@ function ProjectCard({ project, index, onSelect }) {
     >
       <motion.div
         data-hover
-        whileHover={{ y: -6, borderColor: C.accent + "30" }}
+        whileHover={{ y: -6, borderColor: C.accent + "55", boxShadow: "0 18px 50px rgba(14,165,233,0.18)" }}
         whileTap={{ scale: 0.98 }}
         onClick={(e) => { addRipple(e); onSelect(project); }}
         transition={{ duration: 0.3 }}
@@ -1837,11 +1901,18 @@ function ProjectCard({ project, index, onSelect }) {
         }}
       >
         <RippleContainer />
+        {/* gradient accent line at top of card */}
+        <div style={{ height: 3, background: C.grad, opacity: 0.9 }} />
         <div style={{
-          height: 180, position: "relative", background: C.surface,
+          height: 177, position: "relative", overflow: "hidden",
+          background: "radial-gradient(120% 120% at 50% 0%, rgba(14,165,233,0.10) 0%, #111111 55%)",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "3.5rem", fontWeight: 900, color: C.border, lineHeight: 1 }}>{project.num}</span>
+          <span style={{
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "3.5rem", fontWeight: 900, lineHeight: 1,
+            background: C.grad, WebkitBackgroundClip: "text", backgroundClip: "text",
+            WebkitTextFillColor: "transparent", opacity: 0.35,
+          }}>{project.num}</span>
           <span style={{ fontSize: "1.3rem", fontWeight: 800, color: C.white, marginTop: 8 }}>{project.name}</span>
         </div>
         <div style={{ padding: 24 }}>
@@ -2062,7 +2133,7 @@ export default function Page() {
 
   return (
     <MouseProvider>
-      <main style={{ background: C.bg, overflowX: "hidden" }}>
+      <main style={{ background: "transparent", overflowX: "hidden" }}>
         <SpotlightCursor />
         <FloatingParticles />
         <ScrollProgress />
