@@ -963,18 +963,6 @@ function Hero() {
           </span>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <p style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            color: C.accent, fontSize: "0.8rem", fontWeight: 500,
-            letterSpacing: "3px", textTransform: "uppercase", marginBottom: 32,
-          }}>// portfolio</p>
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
