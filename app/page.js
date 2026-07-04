@@ -745,7 +745,7 @@ function ProjectDrawer({ project, onClose }) {
               {project.url || "preview coming soon"}
             </div>
           </div>
-          {project.url ? (
+          {project.url && project.embed !== false ? (
             <iframe
               src={project.url}
               title={project.name}
@@ -765,9 +765,34 @@ function ProjectDrawer({ project, onClose }) {
                 background: C.grad, WebkitBackgroundClip: "text", backgroundClip: "text",
                 WebkitTextFillColor: "transparent", opacity: 0.5,
               }}>{project.num}</span>
-              <p style={{ color: C.text, fontSize: "0.9rem", maxWidth: 320, lineHeight: 1.6 }}>
-                Live preview will appear here once the project URL is added.
-              </p>
+              {project.url ? (
+                <>
+                  <p style={{ color: C.text, fontSize: "0.9rem", maxWidth: 340, lineHeight: 1.6 }}>
+                    This site blocks embedding in other pages (a server security setting), so the preview can't load here — view it directly instead.
+                  </p>
+                  <motion.a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    data-hover
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 8,
+                      background: C.accent, color: C.bg,
+                      padding: "12px 28px", borderRadius: 6,
+                      textDecoration: "none", fontWeight: 700, fontSize: "0.85rem",
+                      marginTop: 4,
+                    }}
+                  >
+                    Open {project.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
+                  </motion.a>
+                </>
+              ) : (
+                <p style={{ color: C.text, fontSize: "0.9rem", maxWidth: 320, lineHeight: 1.6 }}>
+                  Live preview will appear here once the project URL is added.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -1911,14 +1936,14 @@ function Skills() {
 // ═══════════════════════════════════════════════════════════
 const PROJECTS = [
   { name: "Ashley Hotel Group", url: "https://ashleyhotelgroup.com", desc: "Multi-property hotel website with booking integration, responsive layouts, and brand consistency across the group.", tags: ["Responsive", "Custom Layouts", "SEO"], num: "01" },
-  { name: "SureSuccess", url: "https://www.suresuccess.co.uk", desc: "Exam-prep platform for UK financial advisers (CISI IAD & CII DipPFS). Adaptive MCQ practice with full explanations, an AI tutor trained on the syllabi, spaced review, and timed exam-style mocks — built as a fast, responsive web app.", tags: ["React", "EdTech", "AI Tutor"], num: "02" },
-  { name: "Singapore Cruise", url: "https://singaporecruise.com.sg", desc: "Cruise booking platform with mobile-first responsive design and custom forms.", tags: ["Mobile-First", "Forms", "JavaScript"], num: "03" },
+  { name: "SureSuccess", url: "https://www.suresuccess.co.uk", embed: false, desc: "Exam-prep platform for UK financial advisers (CISI IAD & CII DipPFS). Adaptive MCQ practice with full explanations, an AI tutor trained on the syllabi, spaced review, and timed exam-style mocks — built as a fast, responsive web app.", tags: ["React", "EdTech", "AI Tutor"], num: "02" },
+  { name: "Singapore Cruise", url: "https://singaporecruise.com.sg", embed: false, desc: "Cruise booking platform with mobile-first responsive design and custom forms.", tags: ["Mobile-First", "Forms", "JavaScript"], num: "03" },
   { name: "CentralHR Australia", url: "https://centralhr.com.au", desc: "HR services website with clean professional layout, service showcases, and contact integrations.", tags: ["Professional", "HR", "Responsive"], num: "04" },
-  { name: "M2 Wellness", url: "https://www.m2wellness.sg", desc: "Wellness platform with serene design aesthetics, service pages, and appointment-oriented UX.", tags: ["UX Design", "Wellness", "Animations"], num: "05" },
-  { name: "Gallant", url: "https://gallant.sg", desc: "Corporate website with bold design, modern animations, and seamless content management.", tags: ["Corporate", "Animations", "JavaScript"], num: "06" },
+  { name: "M2 Wellness", url: "https://www.m2wellness.sg", embed: false, desc: "Wellness platform with serene design aesthetics, service pages, and appointment-oriented UX.", tags: ["UX Design", "Wellness", "Animations"], num: "05" },
+  { name: "Gallant", url: "https://gallant.sg", embed: false, desc: "Corporate website with bold design, modern animations, and seamless content management.", tags: ["Corporate", "Animations", "JavaScript"], num: "06" },
   { name: "React Learning", url: "https://krishnajoshi-code.github.io/portfolio/", desc: "Interactive React learning journey — completed React Essential Training covering hooks, server components, Next.js App Router, and async data fetching with React 19.", tags: ["React 19", "Next.js", "Hooks"], num: "07" },
-  { name: "Physics First", url: "https://www.physicsfirst.sg", desc: "Marketing site for a Singapore physics & science tuition centre (O/A Level, IGCSE, IB, IP). Responsive layout with programme listings, syllabus pages, testimonials, and clear enrolment calls-to-action.", tags: ["Responsive", "Education", "SEO"], num: "08" },
-  { name: "Jill Lowe", url: "https://www.jilllowe.com", desc: "Website for a Singapore talent-transformation and personal-image consultancy — course catalogue, corporate-training pages, and online shop, with an elegant, conversion-focused responsive design.", tags: ["Responsive", "Courses", "Branding"], num: "09" },
+  { name: "Physics First", url: "https://www.physicsfirst.sg", embed: false, desc: "Marketing site for a Singapore physics & science tuition centre (O/A Level, IGCSE, IB, IP). Responsive layout with programme listings, syllabus pages, testimonials, and clear enrolment calls-to-action.", tags: ["Responsive", "Education", "SEO"], num: "08" },
+  { name: "Jill Lowe", url: "https://www.jilllowe.com", embed: false, desc: "Website for a Singapore talent-transformation and personal-image consultancy — course catalogue, corporate-training pages, and online shop, with an elegant, conversion-focused responsive design.", tags: ["Responsive", "Courses", "Branding"], num: "09" },
 ];
 
 function ProjectCard({ project, index, onSelect }) {
