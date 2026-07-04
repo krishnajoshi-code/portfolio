@@ -1,16 +1,30 @@
-# React + Vite
+# Krishna Joshi — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio of a London-based front-end developer (React specialist, 5+ years).
 
-Currently, two official plugins are available:
+**Live site:** [krishnajoshi-code.github.io/portfolio](https://krishnajoshi-code.github.io/portfolio/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Highlights
 
-## React Compiler
+- Interactive career timeline — expandable roles with tech stacks, live durations, and a scroll-drawn progress line
+- Skill playgrounds — live mini demos (React counter, JS console, flexbox lab, Git terminal, and more)
+- Project drawer with live site previews
+- Hidden terminal easter egg (click the logo 5 times)
+- Custom cursor, text scramble, and scroll-linked animations throughout
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+- [Next.js 14](https://nextjs.org/) (App Router, static export)
+- [React 18](https://react.dev/)
+- [Framer Motion](https://www.framer.com/motion/) for all animations
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Running locally
+
+```bash
+npm install
+npm run dev      # http://localhost:3000/portfolio
+```
+
+## Deployment
+
+Pushes to `main` are built and deployed to GitHub Pages automatically via GitHub Actions (`.github/workflows/deploy.yml`). The site is exported statically with `basePath: /portfolio`.

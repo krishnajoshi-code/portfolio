@@ -39,21 +39,64 @@ function MouseProvider({ children }) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// SPOTLIGHT CURSOR — Large radial glow follows mouse
+// COMET CURSOR — accent dot with a fading tail + click bursts
 // ═══════════════════════════════════════════════════════════
-function SpotlightCursor() {
+const TRAIL = [
+  { size: 5, opacity: 0.6 },
+  { size: 4.5, opacity: 0.45 },
+  { size: 4, opacity: 0.34 },
+  { size: 3.5, opacity: 0.24 },
+  { size: 3, opacity: 0.16 },
+  { size: 2.5, opacity: 0.1 },
+  { size: 2, opacity: 0.06 },
+];
+
+// Each segment springs toward the one before it — the compounding
+// lag is what makes the tail stretch and whip on fast moves.
+function TrailSegment({ x, y, index }) {
+  const sx = useSpring(x, { stiffness: 420 - index * 30, damping: 26, mass: 0.5 });
+  const sy = useSpring(y, { stiffness: 420 - index * 30, damping: 26, mass: 0.5 });
+  const t = TRAIL[index];
+  return (
+    <>
+      <motion.div
+        className="cursor-glow"
+        style={{
+          position: "fixed",
+          left: sx,
+          top: sy,
+          width: t.size,
+          height: t.size,
+          borderRadius: "50%",
+          background: C.accent,
+          opacity: t.opacity,
+          pointerEvents: "none",
+          zIndex: 99996,
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+      {index < TRAIL.length - 1 && <TrailSegment x={sx} y={sy} index={index + 1} />}
+    </>
+  );
+}
+
+function CometCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  const springX = useSpring(cursorX, { damping: 20, stiffness: 300 });
-  const springY = useSpring(cursorY, { damping: 20, stiffness: 300 });
-  const trailX = useSpring(cursorX, { damping: 40, stiffness: 90 });
-  const trailY = useSpring(cursorY, { damping: 40, stiffness: 90 });
+  const headX = useSpring(cursorX, { stiffness: 900, damping: 45, mass: 0.4 });
+  const headY = useSpring(cursorY, { stiffness: 900, damping: 45, mass: 0.4 });
   const [hovering, setHovering] = useState(false);
   const [clicking, setClicking] = useState(false);
+  const [bursts, setBursts] = useState([]);
 
   useEffect(() => {
     const move = (e) => { cursorX.set(e.clientX); cursorY.set(e.clientY); };
-    const down = () => setClicking(true);
+    const down = (e) => {
+      setClicking(true);
+      const id = Date.now() + Math.random();
+      setBursts((prev) => [...prev, { id, x: e.clientX, y: e.clientY }]);
+      setTimeout(() => setBursts((prev) => prev.filter((b) => b.id !== id)), 550);
+    };
     const up = () => setClicking(false);
 
     const hoverIn = () => setHovering(true);
@@ -85,48 +128,60 @@ function SpotlightCursor() {
 
   return (
     <>
-      {/* Soft trailing glow — follows with delay */}
-      <motion.div
-        style={{
-          position: "fixed",
-          left: trailX,
-          top: trailY,
-          width: 300,
-          height: 300,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%)`,
-          pointerEvents: "none",
-          zIndex: 99997,
-          transform: "translate(-50%, -50%)",
-        }}
-      />
-      {/* Cursor ring — expands on hover */}
+      {/* Fading tail */}
+      <TrailSegment x={headX} y={headY} index={0} />
+
+      {/* Click burst rings */}
+      {bursts.map((b) => (
+        <motion.div
+          key={b.id}
+          className="cursor-glow"
+          initial={{ scale: 0.3, opacity: 0.7 }}
+          animate={{ scale: 2.6, opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          style={{
+            position: "fixed",
+            left: b.x - 11,
+            top: b.y - 11,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            border: `1.5px solid ${C.accent}`,
+            pointerEvents: "none",
+            zIndex: 99997,
+          }}
+        />
+      ))}
+
+      {/* Hover ring — appears around the head over links */}
       <motion.div
         className="cursor-glow"
         style={{
           position: "fixed",
-          left: springX,
-          top: springY,
-          width: hovering ? 44 : 24,
-          height: hovering ? 44 : 24,
+          left: headX,
+          top: headY,
+          width: hovering ? 30 : 14,
+          height: hovering ? 30 : 14,
+          opacity: hovering ? 1 : 0,
           borderRadius: "50%",
-          border: `1.5px solid ${hovering ? C.accent : "rgba(14,165,233,0.3)"}`,
+          border: `1.5px solid ${C.accent}`,
           background: "transparent",
           pointerEvents: "none",
           zIndex: 99998,
           transform: "translate(-50%, -50%)",
-          transition: "width 0.25s ease, height 0.25s ease, border-color 0.25s ease",
+          transition: "width 0.25s ease, height 0.25s ease, opacity 0.25s ease",
         }}
       />
-      {/* Cursor dot */}
+
+      {/* Head dot */}
       <motion.div
         className="custom-cursor"
         style={{
           position: "fixed",
-          left: springX,
-          top: springY,
-          width: clicking ? 4 : 5,
-          height: clicking ? 4 : 5,
+          left: headX,
+          top: headY,
+          width: clicking ? 4 : hovering ? 8 : 6,
+          height: clicking ? 4 : hovering ? 8 : 6,
           borderRadius: "50%",
           background: C.accent,
           pointerEvents: "none",
@@ -1951,72 +2006,196 @@ function Projects({ onSelectProject }) {
 // EXPERIENCE
 // ═══════════════════════════════════════════════════════════
 const EXPERIENCE = [
-  { role: "Freelance Front-End Developer", company: "Self-Employed", location: "London, UK", period: "Mar 2025 – Present", type: "Remote", highlights: ["Building React web apps for startups focused on performance and SEO", "Responsive landing pages, e-commerce interfaces, and dashboards using Tailwind CSS", "Performance audits and Core Web Vitals optimisation for client websites"] },
-  { role: "Mid Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Nov 2021 – Feb 2025", type: "On-site", highlights: ["Led front-end for 10+ production websites and web apps", "Built reusable component libraries, reducing dev time by ~30%", "Mentored junior developers on React best practices and clean code"] },
-  { role: "Junior Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Apr 2020 – Oct 2021", type: "On-site", highlights: ["Built responsive cross-browser interfaces across multiple sectors", "Translated Figma mockups into pixel-perfect HTML/CSS/JS", "jQuery-to-React migrations and performance tuning"] },
-  { role: "Apprentice Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Dec 2019 – Mar 2020", type: "On-site", highlights: ["Foundation in front-end principles and team collaboration"] },
+  { role: "Freelance Front-End Developer", company: "Self-Employed", location: "London, UK", period: "Mar 2025 – Present", start: "2025-03", end: null, type: "Remote", tech: ["React", "Next.js", "Tailwind CSS", "Core Web Vitals"], highlights: ["Building React web apps for startups focused on performance and SEO", "Responsive landing pages, e-commerce interfaces, and dashboards using Tailwind CSS", "Performance audits and Core Web Vitals optimisation for client websites"] },
+  { role: "Mid Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Nov 2021 – Feb 2025", start: "2021-11", end: "2025-02", type: "On-site", tech: ["React", "TypeScript", "Redux", "Jest"], highlights: ["Led front-end for 10+ production websites and web apps", "Built reusable component libraries, reducing dev time by ~30%", "Mentored junior developers on React best practices and clean code"] },
+  { role: "Junior Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Apr 2020 – Oct 2021", start: "2020-04", end: "2021-10", type: "On-site", tech: ["JavaScript", "jQuery → React", "HTML/CSS", "Figma"], highlights: ["Built responsive cross-browser interfaces across multiple sectors", "Translated Figma mockups into pixel-perfect HTML/CSS/JS", "jQuery-to-React migrations and performance tuning"] },
+  { role: "Apprentice Front-End Developer", company: "RHAD", location: "Ahmedabad, India", period: "Dec 2019 – Mar 2020", start: "2019-12", end: "2020-03", type: "On-site", tech: ["HTML", "CSS", "JavaScript", "Git"], highlights: ["Foundation in front-end principles and team collaboration"] },
 ];
+
+// LinkedIn-style inclusive duration, e.g. "3 yrs 4 mos"
+function formatDuration(start, end) {
+  const [sy, sm] = start.split("-").map(Number);
+  const now = new Date();
+  const [ey, em] = end ? end.split("-").map(Number) : [now.getFullYear(), now.getMonth() + 1];
+  const months = (ey - sy) * 12 + (em - sm) + 1;
+  const yrs = Math.floor(months / 12);
+  const mos = months % 12;
+  return [yrs ? `${yrs} yr${yrs > 1 ? "s" : ""}` : "", mos ? `${mos} mo${mos > 1 ? "s" : ""}` : ""].filter(Boolean).join(" ");
+}
+
+function ExperienceItem({ exp, index, isOpen, onToggle, duration, sectionInView }) {
+  const itemRef = useRef(null);
+  const nearCenter = useInView(itemRef, { margin: "-40% 0px -40% 0px" });
+  const lit = nearCenter || isOpen;
+
+  return (
+    <motion.div
+      ref={itemRef}
+      initial={{ opacity: 0, x: -20 }}
+      animate={sectionInView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.12 }}
+      style={{ paddingLeft: 32, marginBottom: 20, position: "relative" }}
+    >
+      {/* Timeline node — lights up as it passes the viewport centre */}
+      <motion.div
+        animate={{
+          scale: lit ? 1.2 : 1,
+          backgroundColor: lit ? C.accent : "#333333",
+          boxShadow: lit ? `0 0 14px ${C.accentGlow}` : "0 0 0px rgba(0,0,0,0)",
+        }}
+        transition={{ duration: 0.35 }}
+        style={{ position: "absolute", left: -4, top: 26, width: 10, height: 10, borderRadius: "50%", zIndex: 2 }}
+      />
+      {index === 0 && (
+        <motion.div
+          animate={{ scale: [1, 2.4], opacity: [0.6, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+          style={{ position: "absolute", left: -4, top: 26, width: 10, height: 10, borderRadius: "50%", border: `1px solid ${C.accent}`, zIndex: 1 }}
+        />
+      )}
+
+      <motion.div
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        data-hover
+        onClick={onToggle}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onToggle(); } }}
+        whileHover={{ y: -2 }}
+        style={{
+          border: `1px solid ${isOpen ? "rgba(14,165,233,0.35)" : C.border}`,
+          background: isOpen ? "rgba(14,165,233,0.04)" : C.card,
+          borderRadius: 12, padding: "18px 22px",
+          transition: "border-color 0.3s, background 0.3s",
+          outline: "none",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
+          <div>
+            <h3 style={{ color: C.white, fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>{exp.role}</h3>
+            <p style={{ color: C.text, fontSize: "0.85rem", fontWeight: 500, margin: "4px 0 0" }}>
+              {exp.company} <span style={{ color: C.muted }}>•</span> {exp.location}
+            </p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", color: C.muted }}>{exp.period}</span>
+            <motion.svg
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+              width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke={isOpen ? C.accent : C.muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </motion.svg>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+          {index === 0 && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid rgba(34,197,94,0.35)", color: "#22c55e", padding: "3px 10px", borderRadius: 4, fontSize: "0.68rem", fontFamily: "'JetBrains Mono', monospace" }}>
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#22c55e", animation: "blink 2s ease-in-out infinite" }} />
+              Current
+            </span>
+          )}
+          <span style={{ border: `1px solid ${C.border}`, color: C.muted, padding: "3px 10px", borderRadius: 4, fontSize: "0.68rem", fontFamily: "'JetBrains Mono', monospace" }}>{exp.type}</span>
+          {duration && (
+            <span style={{ border: "1px solid rgba(14,165,233,0.3)", color: C.accent, padding: "3px 10px", borderRadius: 4, fontSize: "0.68rem", fontFamily: "'JetBrains Mono', monospace" }}>{duration}</span>
+          )}
+        </div>
+
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              key="body"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{ overflow: "hidden" }}
+            >
+              <ul style={{ margin: "16px 0 0", paddingLeft: 0, listStyle: "none" }}>
+                {exp.highlights.map((h, j) => (
+                  <motion.li
+                    key={j}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 + j * 0.07 }}
+                    style={{ color: C.text, fontSize: "0.9rem", lineHeight: 1.7, marginBottom: 4, paddingLeft: 16, position: "relative" }}
+                  >
+                    <span style={{ position: "absolute", left: 0, color: C.accent }}>—</span>{h}
+                  </motion.li>
+                ))}
+              </ul>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.border}` }}>
+                {exp.tech.map((t, j) => (
+                  <motion.span
+                    key={t}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.15 + j * 0.05 }}
+                    style={{ border: `1px solid ${C.border}`, color: C.muted, padding: "4px 10px", borderRadius: 4, fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    {t}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 function Experience() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [open, setOpen] = useState(0);
+  const [durations, setDurations] = useState(null);
+
+  const timelineRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ["start 0.8", "end 0.45"] });
+  const lineScale = useSpring(scrollYProgress, { stiffness: 90, damping: 25 });
+
+  // Computed on the client only — "Present" depends on today's date
+  useEffect(() => {
+    setDurations(EXPERIENCE.map((e) => formatDuration(e.start, e.end)));
+  }, []);
 
   return (
     <section id="experience" ref={ref} style={{ padding: "120px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 0.6 }}>
           <p style={{ fontFamily: "'JetBrains Mono', monospace", color: C.accent, fontSize: "0.75rem", letterSpacing: "3px", textTransform: "uppercase", marginBottom: 20 }}>// experience</p>
-          <h2 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 900, color: C.white, marginBottom: 60, letterSpacing: "-1px" }}>
+          <h2 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 900, color: C.white, marginBottom: 16, letterSpacing: "-1px" }}>
             <TextScramble>Where I've Worked</TextScramble>
           </h2>
+          <p style={{ fontFamily: "'JetBrains Mono', monospace", color: C.muted, fontSize: "0.72rem", letterSpacing: "1px", marginBottom: 60 }}>
+            // click a role to expand — the line draws as you scroll
+          </p>
         </motion.div>
 
-        <div style={{ position: "relative" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 1, background: C.border }} />
+        <div ref={timelineRef} style={{ position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 8, bottom: 12, width: 2, background: C.border, borderRadius: 2 }} />
+          <motion.div
+            style={{
+              position: "absolute", left: 0, top: 8, bottom: 12, width: 2,
+              background: `linear-gradient(to bottom, ${C.accent}, ${C.accent2})`,
+              borderRadius: 2, scaleY: lineScale, transformOrigin: "top",
+              boxShadow: "0 0 12px rgba(14,165,233,0.35)",
+            }}
+          />
 
           {EXPERIENCE.map((exp, i) => (
-            <motion.div
+            <ExperienceItem
               key={exp.role}
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              style={{ paddingLeft: 32, marginBottom: 48, position: "relative" }}
-            >
-              <div style={{
-                position: "absolute", left: -4, top: 6,
-                width: 9, height: 9, borderRadius: "50%",
-                background: i === 0 ? C.accent : C.muted,
-                boxShadow: i === 0 ? `0 0 12px ${C.accentGlow}` : "none",
-              }} />
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
-                <div>
-                  <h3 style={{ color: C.white, fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>{exp.role}</h3>
-                  <p style={{ color: C.text, fontSize: "0.85rem", fontWeight: 500, margin: "4px 0 0" }}>
-                    {exp.company} <span style={{ color: C.muted }}>•</span> {exp.location}
-                  </p>
-                </div>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.75rem", color: C.muted }}>{exp.period}</span>
-              </div>
-
-              <ul style={{ margin: "12px 0 0", paddingLeft: 0, listStyle: "none" }}>
-                {exp.highlights.map((h, j) => (
-                  <motion.li
-                    key={j}
-                    variants={staggerItem}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={i * 3 + j}
-                    style={{
-                      color: C.text, fontSize: "0.9rem", lineHeight: 1.7,
-                      marginBottom: 4, paddingLeft: 16, position: "relative",
-                    }}
-                  >
-                    <span style={{ position: "absolute", left: 0, color: C.muted }}>—</span>{h}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
+              exp={exp}
+              index={i}
+              isOpen={open === i}
+              onToggle={() => setOpen(open === i ? null : i)}
+              duration={durations?.[i]}
+              sectionInView={isInView}
+            />
           ))}
         </div>
       </div>
@@ -2126,7 +2305,7 @@ export default function Page() {
   return (
     <MouseProvider>
       <main style={{ background: "transparent", overflowX: "hidden" }}>
-        <SpotlightCursor />
+        <CometCursor />
         <FloatingParticles />
         <ScrollProgress />
         <Nav onTerminal={() => setTerminalOpen(true)} />
